@@ -6,6 +6,9 @@ public class EnlaceDTO {
     private String aplicacion;
     private String mensaje;
     private Long usuarioId;
+    
+    // Último análisis de phishing (si existe)
+    private AnalisisPhishingDTO ultimoAnalisis;
 
     public Long getId() {
         return id;
@@ -46,6 +49,15 @@ public class EnlaceDTO {
     public void setUsuarioId(Long usuarioId) {
         this.usuarioId = usuarioId;
     }
+
+    public AnalisisPhishingDTO getUltimoAnalisis() {
+        return ultimoAnalisis;
+    }
+
+    public void setUltimoAnalisis(AnalisisPhishingDTO ultimoAnalisis) {
+        this.ultimoAnalisis = ultimoAnalisis;
+    }
+
     public EnlaceDTO() {
     }
 
@@ -57,5 +69,13 @@ public class EnlaceDTO {
         this.usuarioId = usuarioId;
     }
 
-
+    public EnlaceDTO(Long id, String url, String aplicacion, String mensaje, Long usuarioId, 
+                     AnalisisPhishingDTO ultimoAnalisis) {
+        this.id = id;
+        this.url = url;
+        this.aplicacion = aplicacion;
+        this.mensaje = mensaje;
+        this.usuarioId = usuarioId;
+        this.ultimoAnalisis = ultimoAnalisis;
+    }
 }
