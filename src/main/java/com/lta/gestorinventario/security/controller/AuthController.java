@@ -51,8 +51,16 @@ public class AuthController {
 
         //Verificar si el usuario existe y su contraseña correcta
         if(userDetails != null && passwordEncoder.matches(authRequest.getPassword(),userDetails.getPassword())){
-            String jwt = jwtUtil.generateToken(userDetails);
-            return ResponseEntity.ok(new AuthResponse(jwt));
+            // Obtener el usuario completo para acceder al ID
+            Usuario usuario = usuarioService.buscarPorNombre(authRequest.getUsername());
+            String jwt = jwtUtil.generateToken(userDetails, usuario.getId());
+            
+            // Crear respuesta con token, usuarioId y username
+            AuthResponse response = new AuthResponse(jwt);
+            response.setUsuarioId(usuario.getId());
+            response.setUsername(usuario.getUsername());
+            
+            return ResponseEntity.ok(response);
         }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorecto");
         }
