@@ -74,6 +74,7 @@ public class AnalisisPhishingController {
         return new AnalisisPhishingDTO(
                 analisis.getId(),
                 analisis.getEnlace().getId(),
+                analisis.getEnlace().getUrl(), // Agregar la URL del enlace
                 analisis.getIsPhishing(),
                 analisis.getProbabilityPhishing(),
                 analisis.getConfidence(),

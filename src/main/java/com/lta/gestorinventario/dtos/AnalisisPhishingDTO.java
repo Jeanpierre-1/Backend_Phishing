@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class AnalisisPhishingDTO {
     private Long id;
     private Long enlaceId;
+    private String urlEnlace; // URL del enlace analizado
     
     // Resultados principales
     private Boolean isPhishing;
