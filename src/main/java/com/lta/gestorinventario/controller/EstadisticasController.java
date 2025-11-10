@@ -168,6 +168,36 @@ public class EstadisticasController {
         return ResponseEntity.ok(total);
     }
 
+    @GetMapping("/debug")
+    public ResponseEntity<String> debugDistribucion() {
+        long totalPhishing = analisisRepository.contarPhishing();
+        long totalLegitimas = analisisRepository.contarLegitimos();
+        long totalNulos = analisisRepository.contarAnalisisNulos();
+        long total = analisisRepository.contarTotalAnalisis();
+        
+        String debug = String.format(
+            "=== DEBUG DISTRIBUCIÓN ===\n\n" +
+            "Total Análisis en BD: %d\n" +
+            "Phishing (isPhishing=true): %d\n" +
+            "Legítimas (isPhishing=false): %d\n" +
+            "NULL (isPhishing=null): %d\n" +
+            "Suma (true+false+null): %d\n" +
+            "Diferencia: %d\n\n" +
+            "Porcentajes:\n" +
+            "- Phishing: %.2f%%\n" +
+            "- Legítimas: %.2f%%\n" +
+            "- NULL: %.2f%%",
+            total, totalPhishing, totalLegitimas, totalNulos,
+            (totalPhishing + totalLegitimas + totalNulos),
+            (total - (totalPhishing + totalLegitimas + totalNulos)),
+            (total > 0 ? (double) totalPhishing / total * 100 : 0),
+            (total > 0 ? (double) totalLegitimas / total * 100 : 0),
+            (total > 0 ? (double) totalNulos / total * 100 : 0)
+        );
+        
+        return ResponseEntity.ok(debug);
+    }
+
     /**
      * Obtiene el inicio de la semana actual (lunes a las 00:00:00)
      */

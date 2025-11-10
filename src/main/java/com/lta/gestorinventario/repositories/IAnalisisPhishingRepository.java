@@ -63,6 +63,12 @@ public interface IAnalisisPhishingRepository extends JpaRepository<AnalisisPhish
     long contarLegitimos();
     
     /**
+     * Cuenta análisis con valor NULL en isPhishing
+     */
+    @Query("SELECT COUNT(a) FROM AnalisisPhishing a WHERE a.isPhishing IS NULL")
+    long contarAnalisisNulos();
+    
+    /**
      * Obtiene el conteo de análisis de phishing por aplicación
      */
     @Query("SELECT e.aplicacion, COUNT(a) FROM AnalisisPhishing a JOIN a.enlace e WHERE a.isPhishing = true GROUP BY e.aplicacion ORDER BY COUNT(a) DESC")
