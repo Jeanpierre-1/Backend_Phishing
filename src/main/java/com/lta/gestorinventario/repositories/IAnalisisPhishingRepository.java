@@ -37,4 +37,34 @@ public interface IAnalisisPhishingRepository extends JpaRepository<AnalisisPhish
      */
     @Query("SELECT a FROM AnalisisPhishing a WHERE a.enlace.usuario.id = :usuarioId")
     List<AnalisisPhishing> findByUsuarioId(@Param("usuarioId") Long usuarioId);
+    
+    /**
+     * Cuenta el total de análisis en el sistema
+     */
+    @Query("SELECT COUNT(a) FROM AnalisisPhishing a")
+    long contarTotalAnalisis();
+    
+    /**
+     * Cuenta análisis de esta semana
+     */
+    @Query("SELECT COUNT(a) FROM AnalisisPhishing a WHERE a.analysisTimestamp >= :fechaInicio")
+    long contarAnalisisEstaSemana(@Param("fechaInicio") java.time.LocalDateTime fechaInicio);
+    
+    /**
+     * Cuenta análisis que son phishing
+     */
+    @Query("SELECT COUNT(a) FROM AnalisisPhishing a WHERE a.isPhishing = true")
+    long contarPhishing();
+    
+    /**
+     * Cuenta análisis que son legítimos
+     */
+    @Query("SELECT COUNT(a) FROM AnalisisPhishing a WHERE a.isPhishing = false")
+    long contarLegitimos();
+    
+    /**
+     * Obtiene el conteo de análisis de phishing por aplicación
+     */
+    @Query("SELECT e.aplicacion, COUNT(a) FROM AnalisisPhishing a JOIN a.enlace e WHERE a.isPhishing = true GROUP BY e.aplicacion ORDER BY COUNT(a) DESC")
+    List<Object[]> contarPhishingPorAplicacion();
 }
