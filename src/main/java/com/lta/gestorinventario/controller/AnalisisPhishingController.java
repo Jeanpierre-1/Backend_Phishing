@@ -2,9 +2,13 @@ package com.lta.gestorinventario.controller;
 
 import com.lta.gestorinventario.dtos.AnalisisPhishingDTO;
 import com.lta.gestorinventario.entity.AnalisisPhishing;
+import com.lta.gestorinventario.entity.Usuario;
 import com.lta.gestorinventario.repositories.IAnalisisPhishingRepository;
+import com.lta.gestorinventario.security.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,10 +21,17 @@ public class AnalisisPhishingController {
 
     @Autowired
     private IAnalisisPhishingRepository analisisRepository;
+    
+    @Autowired
+    private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<AnalisisPhishingDTO>> listarTodos() {
-        List<AnalisisPhishing> analisis = analisisRepository.findAll();
+    public ResponseEntity<List<AnalisisPhishingDTO>> listarTodos(@AuthenticationPrincipal UserDetails userDetails) {
+        // Obtener el usuario autenticado
+        Usuario usuario = usuarioService.buscarPorNombre(userDetails.getUsername());
+        
+        // Filtrar análisis solo del usuario autenticado
+        List<AnalisisPhishing> analisis = analisisRepository.findByUsuarioId(usuario.getId());
         List<AnalisisPhishingDTO> dtos = analisis.stream()
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
@@ -74,6 +85,7 @@ public class AnalisisPhishingController {
         return new AnalisisPhishingDTO(
                 analisis.getId(),
                 analisis.getEnlace().getId(),
+                analisis.getEnlace().getUrl(), // Agregar la URL del enlace
                 analisis.getIsPhishing(),
                 analisis.getProbabilityPhishing(),
                 analisis.getConfidence(),
